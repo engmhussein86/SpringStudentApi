@@ -2,6 +2,7 @@ package com.student.demo.service.impl;
 
 import com.student.demo.entity.Student;
 import com.student.demo.exception.DuplicateEmailException;
+import com.student.demo.exception.InvalidStudentAgeException;
 import com.student.demo.exception.ResourceNotFoundException;
 import com.student.demo.repository.StudentRepository;
 import com.student.demo.service.StudentService;
@@ -29,9 +30,11 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
-        if(studentRepository.existsByEmail(student.getEmail())){
-            throw new DuplicateEmailException(student.getEmail());
-        }
+
+                if (studentRepository.existsByEmail(student.getEmail())) {
+                    throw new DuplicateEmailException(student.getEmail());
+                }
+
         return studentRepository.save(student);
     }
 

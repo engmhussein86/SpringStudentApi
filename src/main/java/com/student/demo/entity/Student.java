@@ -1,5 +1,7 @@
 package com.student.demo.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 
 
 @Entity
@@ -11,14 +13,20 @@ public class Student {
     private Long id;
 
     @Column(name = "first_name")
+    @NotBlank(message = "First name is required")
     private String firstName;
 
     @Column(name = "last_name")
+    @NotBlank(message = "Last name is required")
     private String lastName;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
+    @Min(value = 16, message = "Age must be at least 16")
+    @Max(value = 100, message = "Age must not exceed 100")
     private Integer age;
 
     public Student(Long id, String firstName, String lastName, String email, Integer age) {

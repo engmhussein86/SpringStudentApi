@@ -1,6 +1,7 @@
 package com.student.demo.handler;
 
 import com.student.demo.exception.DuplicateEmailException;
+import com.student.demo.exception.InvalidStudentAgeException;
 import com.student.demo.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ErrorResponse(ex.getMessage(),HttpStatus.CONFLICT.value(), LocalDateTime.now())
                 , HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidStudentAgeException.class)
+    public ResponseEntity<Object> handleInvalidAge(InvalidStudentAgeException ex){
+        return new ResponseEntity<>(
+                new ErrorResponse(ex.getMessage(),HttpStatus.BAD_REQUEST.value(), LocalDateTime.now())
+                , HttpStatus.BAD_REQUEST);
     }
 }
