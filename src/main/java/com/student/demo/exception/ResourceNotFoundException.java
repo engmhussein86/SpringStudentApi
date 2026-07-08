@@ -1,7 +1,7 @@
 package com.student.demo.exception;
 
 public class ResourceNotFoundException extends RuntimeException{
-    public ResourceNotFoundException(String msg){
-        super(msg);
+    public ResourceNotFoundException(String resourceName, Long id){
+        super(resourceName + " with id : "+ id + " was not found.");
     }
 }
