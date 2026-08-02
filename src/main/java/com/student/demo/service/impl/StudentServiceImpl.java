@@ -59,18 +59,18 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Student", id));
 
-        Student student = studentMapper.toEntity(studentRequestDTO);
+        if (!existingStudent.getEmail().equals(studentRequestDTO.getEmail())
+                && studentRepository.existsByEmail(studentRequestDTO.getEmail())) {
 
-        if (!existingStudent.getEmail().equals(student.getEmail())
-                && studentRepository.existsByEmail(student.getEmail())) {
-
-            throw new DuplicateEmailException(student.getEmail());
+            throw new DuplicateEmailException(studentRequestDTO.getEmail());
         }
 
-        existingStudent.setFirstName(student.getFirstName());
-        existingStudent.setLastName(student.getLastName());
-        existingStudent.setEmail(student.getEmail());
-        existingStudent.setAge(student.getAge());
+        studentMapper.updateStudentFromDto(studentRequestDTO,existingStudent);
+// move this code to mapper to make service focuse on busniess logic (Single Responsibility Principle (SRP))
+//        existingStudent.setFirstName(studentRequestDTO.getFirstName());
+//        existingStudent.setLastName(studentRequestDTO.getLastName());
+//        existingStudent.setEmail(studentRequestDTO.getEmail());
+//        existingStudent.setAge(studentRequestDTO.getAge());
 
         Student savedStudent = studentRepository.save(existingStudent);
 

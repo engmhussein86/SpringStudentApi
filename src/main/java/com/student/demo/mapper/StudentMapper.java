@@ -33,4 +33,12 @@ public class StudentMapper {
 
         return dto;
     }
+
+    public void updateStudentFromDto(StudentRequestDTO dto, Student student) {
+
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setAge(dto.getAge());
+    }
 }
