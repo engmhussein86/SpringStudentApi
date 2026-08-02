@@ -1,6 +1,8 @@
 package com.student.demo.controller;
 
 
+import com.student.demo.dto.StudentRequestDTO;
+import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
 import com.student.demo.service.StudentService;
 import jakarta.validation.Valid;
@@ -35,14 +37,14 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(
-            @Valid @RequestBody Student student) {
+    public ResponseEntity<StudentResponseDTO> createStudent(
+            @Valid @RequestBody StudentRequestDTO requestDTO) {
 
-        Student createdStudent = studentService.createStudent(student);
+        StudentResponseDTO responseDTO = studentService.createStudent(requestDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(createdStudent);
+                .body(responseDTO);
     }
 
     @PutMapping("/{id}")

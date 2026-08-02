@@ -3,7 +3,9 @@ package com.student.demo.mapper;
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StudentMapper {
 
     public Student toEntity(StudentRequestDTO dto) {
