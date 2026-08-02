@@ -29,6 +29,9 @@ public class Student {
     @Max(value = 100, message = "Age must not exceed 100")
     private Integer age;
 
+    public Student() {
+    }
+
     public Student(Long id, String firstName, String lastName, String email, Integer age) {
         this.id = id;
         this.firstName = firstName;

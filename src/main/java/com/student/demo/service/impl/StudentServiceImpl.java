@@ -7,10 +7,12 @@ import com.student.demo.exception.ResourceNotFoundException;
 import com.student.demo.repository.StudentRepository;
 import com.student.demo.service.StudentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class StudentServiceImpl implements StudentService {
     private  final StudentRepository studentRepository;
 
@@ -29,6 +31,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public Student createStudent(Student student) {
 
                 if (studentRepository.existsByEmail(student.getEmail())) {
@@ -39,12 +42,35 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public Student updateStudent(Long id, Student student) {
-        return null;
+        Student existingStudent = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student", id));
+
+        if (!existingStudent.getEmail().equals(student.getEmail())
+                && studentRepository.existsByEmail(student.getEmail())) {
+
+            throw new DuplicateEmailException(student.getEmail());
+        }
+
+        existingStudent.setFirstName(student.getFirstName());
+        existingStudent.setLastName(student.getLastName());
+        existingStudent.setEmail(student.getEmail());
+        existingStudent.setAge(student.getAge());
+
+        return studentRepository.save(existingStudent);
+
     }
 
     @Override
+    @Transactional
     public void deleteStudent(Long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Student", id));
+
+        studentRepository.delete(student);
 
     }
 }
