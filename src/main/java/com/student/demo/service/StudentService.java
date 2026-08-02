@@ -8,10 +8,10 @@ import java.util.Optional;
 
 public interface StudentService {
 
-     List<Student> getAllStudents();
-     Student getStudentById(Long id);
+     List<StudentResponseDTO> getAllStudents();
+     StudentResponseDTO getStudentById(Long id);
      StudentResponseDTO  createStudent(StudentRequestDTO student);
-     Student updateStudent(Long id, Student student);
+     StudentResponseDTO updateStudent(Long id, StudentRequestDTO student);
      void deleteStudent(Long id);
 
 }

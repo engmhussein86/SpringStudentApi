@@ -25,14 +25,17 @@ public class StudentServiceImpl implements StudentService {
         this.studentMapper = studentMapper;
     }
 
-    public List<Student> getAllStudents(){
-        return studentRepository.findAll();
+    public List<StudentResponseDTO> getAllStudents(){
+
+        return studentRepository.findAll().stream()
+                .map(studentMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Student getStudentById(Long id) {
-        return studentRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Student", id));
+    public StudentResponseDTO getStudentById(Long id) {
+        return studentMapper.toDTO(studentRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Student", id)));
     }
 
     @Override
@@ -51,10 +54,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
-    public Student updateStudent(Long id, Student student) {
+    public StudentResponseDTO updateStudent(Long id, StudentRequestDTO studentRequestDTO) {
         Student existingStudent = studentRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Student", id));
+
+        Student student = studentMapper.toEntity(studentRequestDTO);
 
         if (!existingStudent.getEmail().equals(student.getEmail())
                 && studentRepository.existsByEmail(student.getEmail())) {
@@ -67,7 +72,9 @@ public class StudentServiceImpl implements StudentService {
         existingStudent.setEmail(student.getEmail());
         existingStudent.setAge(student.getAge());
 
-        return studentRepository.save(existingStudent);
+        Student savedStudent = studentRepository.save(existingStudent);
+
+        return studentMapper.toDTO(savedStudent);
 
     }
 

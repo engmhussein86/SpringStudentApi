@@ -22,16 +22,16 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentService.getAllStudents();
+    public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
+        List<StudentResponseDTO> students = studentService.getAllStudents();
 
         return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable Long id) {
+    public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
 
-        Student student = studentService.getStudentById(id);
+        StudentResponseDTO student = studentService.getStudentById(id);
 
         return ResponseEntity.ok(student);
     }
@@ -48,11 +48,11 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(
+    public ResponseEntity<StudentResponseDTO> updateStudent(
             @PathVariable Long id,
-            @Valid @RequestBody Student student) {
+            @Valid @RequestBody StudentRequestDTO student) {
 
-        Student updatedStudent =
+        StudentResponseDTO updatedStudent =
                 studentService.updateStudent(id, student);
 
         return ResponseEntity.ok(updatedStudent);
