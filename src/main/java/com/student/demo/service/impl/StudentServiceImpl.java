@@ -4,26 +4,22 @@ import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
 import com.student.demo.exception.DuplicateEmailException;
-import com.student.demo.exception.InvalidStudentAgeException;
 import com.student.demo.exception.ResourceNotFoundException;
 import com.student.demo.mapper.StudentMapper;
 import com.student.demo.repository.StudentRepository;
 import com.student.demo.service.StudentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
 public class StudentServiceImpl implements StudentService {
     private  final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
-
-    public StudentServiceImpl(StudentRepository studentRepository,StudentMapper studentMapper){
-        this.studentRepository = studentRepository;
-        this.studentMapper = studentMapper;
-    }
 
     public List<StudentResponseDTO> getAllStudents(){
 

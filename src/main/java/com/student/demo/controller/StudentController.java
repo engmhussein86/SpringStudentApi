@@ -3,25 +3,22 @@ package com.student.demo.controller;
 
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
-import com.student.demo.entity.Student;
 import com.student.demo.service.StudentService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/students")
 public class StudentController {
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService) {
-        this.studentService =studentService;
-    }
-
-    @GetMapping
+     @GetMapping
     public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
         List<StudentResponseDTO> students = studentService.getAllStudents();
 
