@@ -1,10 +1,7 @@
 package com.student.demo.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +24,7 @@ public class StudentRequestDTO {
     private String email;
 
     @Schema(description = "Student age", example = "20")
+    @NotNull(message = "Age is required")
     @Min(value = 16, message = "Age must be at least 16")
     @Max(value = 100, message = "Age must not exceed 100")
     private Integer age;
