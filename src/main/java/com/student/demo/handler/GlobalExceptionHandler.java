@@ -1,11 +1,11 @@
 package com.student.demo.handler;
 
 import com.student.demo.exception.DuplicateEmailException;
-import com.student.demo.exception.InvalidSortFieldException;
 import com.student.demo.exception.InvalidStudentAgeException;
 import com.student.demo.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.data.core.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -82,19 +82,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(InvalidSortFieldException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidSortField(
-            InvalidSortFieldException ex,
-            HttpServletRequest request) {
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(buildErrorResponse(
-                        ex.getMessage(),
-                        HttpStatus.BAD_REQUEST,
-                        request
-                ).getBody());
-    }
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolation(
             ConstraintViolationException ex,
@@ -118,5 +105,18 @@ public class GlobalExceptionHandler {
         response.setValidationErrors(errors);
 
         return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidSort(
+            PropertyReferenceException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.badRequest()
+                .body(buildErrorResponse(
+                        "Invalid sort field",
+                        HttpStatus.BAD_REQUEST,
+                        request
+                ).getBody());
     }
 }

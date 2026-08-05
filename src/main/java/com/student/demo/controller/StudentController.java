@@ -13,6 +13,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -36,30 +39,13 @@ public class StudentController {
     })
      @GetMapping
     public ResponseEntity<Page<StudentResponseDTO>> getAllStudents(
-            @Parameter(description = "Page number starting from 0", example = "0")
-            @RequestParam(defaultValue = "0")
-            @Min(value = 0, message = "Page number cannot be negative")
-            int page,
-
-
-            @Parameter(description = "Number of records per page", example = "10")
-            @RequestParam(defaultValue = "10")
-            @Min(value = 1, message = "Page size must be at least 1")
-            @Max(value = 100, message = "Page size cannot exceed 100")
-            int size,
-
-
-            @RequestParam(defaultValue = "id")
-            String sortBy,
-
-
-            @RequestParam(defaultValue = "asc")
-            String direction) {
-        Page<StudentResponseDTO> students = studentService.getAllStudents(
-                page,
-                size,
-                sortBy,
-                direction);
+            @PageableDefault(
+            page = 0,
+            size = 10,
+            sort = "id",
+            direction = Sort.Direction.ASC
+    )Pageable pageable) {
+        Page<StudentResponseDTO> students = studentService.getAllStudents(pageable);
 
         return ResponseEntity.ok(students);
     }
