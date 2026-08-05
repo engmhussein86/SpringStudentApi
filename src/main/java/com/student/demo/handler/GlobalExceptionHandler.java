@@ -1,9 +1,11 @@
 package com.student.demo.handler;
 
 import com.student.demo.exception.DuplicateEmailException;
+import com.student.demo.exception.InvalidSortFieldException;
 import com.student.demo.exception.InvalidStudentAgeException;
 import com.student.demo.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,6 +78,44 @@ public class GlobalExceptionHandler {
                 request).getBody();
 
         response.setValidationErrors(validationErrors);
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler(InvalidSortFieldException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidSortField(
+            InvalidSortFieldException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(buildErrorResponse(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST,
+                        request
+                ).getBody());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(
+            ConstraintViolationException ex,
+            HttpServletRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations()
+                .forEach(error ->
+                        errors.put(
+                                error.getPropertyPath().toString(),
+                                error.getMessage()
+                        ));
+
+        ErrorResponse response = buildErrorResponse(
+                "Validation failed",
+                HttpStatus.BAD_REQUEST,
+                request
+        ).getBody();
+
+        response.setValidationErrors(errors);
 
         return ResponseEntity.badRequest().body(response);
     }

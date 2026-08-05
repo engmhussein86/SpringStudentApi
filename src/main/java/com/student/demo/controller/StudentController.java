@@ -9,9 +9,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,19 +23,43 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/students")
+@Validated
 public class StudentController {
     private final StudentService studentService;
 
     @Operation(
-            summary = "Get all students",
-            description = "Retrieves all students from the database."
+            summary = "Get students with pagination and sorting",
+            description = "Returns students page by page with sorting options"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Students retrieved successfully")
     })
      @GetMapping
-    public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
-        List<StudentResponseDTO> students = studentService.getAllStudents();
+    public ResponseEntity<Page<StudentResponseDTO>> getAllStudents(
+            @Parameter(description = "Page number starting from 0", example = "0")
+            @RequestParam(defaultValue = "0")
+            @Min(value = 0, message = "Page number cannot be negative")
+            int page,
+
+
+            @Parameter(description = "Number of records per page", example = "10")
+            @RequestParam(defaultValue = "10")
+            @Min(value = 1, message = "Page size must be at least 1")
+            @Max(value = 100, message = "Page size cannot exceed 100")
+            int size,
+
+
+            @RequestParam(defaultValue = "id")
+            String sortBy,
+
+
+            @RequestParam(defaultValue = "asc")
+            String direction) {
+        Page<StudentResponseDTO> students = studentService.getAllStudents(
+                page,
+                size,
+                sortBy,
+                direction);
 
         return ResponseEntity.ok(students);
     }

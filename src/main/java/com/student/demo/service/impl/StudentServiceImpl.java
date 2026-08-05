@@ -4,15 +4,21 @@ import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
 import com.student.demo.exception.DuplicateEmailException;
+import com.student.demo.exception.InvalidSortFieldException;
 import com.student.demo.exception.ResourceNotFoundException;
 import com.student.demo.mapper.StudentMapper;
 import com.student.demo.repository.StudentRepository;
 import com.student.demo.service.StudentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -20,12 +26,30 @@ import java.util.List;
 public class StudentServiceImpl implements StudentService {
     private  final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private static final Set<String> ALLOWED_SORT_FIELDS =
+            Set.of("id", "firstName", "lastName", "email", "age");
 
-    public List<StudentResponseDTO> getAllStudents(){
+    public Page<StudentResponseDTO> getAllStudents(int page,
+                                                   int size,
+                                                   String sortBy,
+                                                   String direction){
 
-        return studentRepository.findAll().stream()
-                .map(studentMapper::toDTO)
-                .toList();
+        if (!ALLOWED_SORT_FIELDS.contains(sortBy)) {
+            throw new InvalidSortFieldException(sortBy);
+        }
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable =
+                PageRequest.of(page, size, sort);
+
+        return studentRepository.findAll(pageable)
+                .map(studentMapper::toDTO);
+
+//        return studentRepository.findAll().stream()
+//                .map(studentMapper::toDTO)
+//                .toList();
     }
 
     @Override
