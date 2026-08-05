@@ -1,5 +1,6 @@
 package com.student.demo.service.impl;
 
+import com.student.demo.dto.StudentPatchRequestDTO;
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
@@ -41,8 +42,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentResponseDTO getStudentById(Long id) {
-        return studentMapper.toDTO(studentRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Student", id)));
+        return studentMapper.toDTO(findStudentById(id));
     }
 
     @Override
@@ -62,9 +62,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public StudentResponseDTO updateStudent(Long id, StudentRequestDTO studentRequestDTO) {
-        Student existingStudent = studentRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Student", id));
+        Student existingStudent = findStudentById(id);
 
         if (!existingStudent.getEmail().equals(studentRequestDTO.getEmail())
                 && studentRepository.existsByEmail(studentRequestDTO.getEmail())) {
@@ -88,11 +86,49 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteStudent(Long id) {
-        Student student = studentRepository.findById(id)
+        Student existingStudent = findStudentById(id);
+
+        studentRepository.delete(existingStudent);
+
+    }
+
+    @Override
+    @Transactional
+    public StudentResponseDTO patchStudent(
+            Long id,
+            StudentPatchRequestDTO patchRequestDTO) {
+
+        Student existingStudent = findStudentById(id);
+
+
+        if (patchRequestDTO.getEmail() != null
+                && !existingStudent.getEmail()
+                .equals(patchRequestDTO.getEmail())
+                && studentRepository.existsByEmail(
+                patchRequestDTO.getEmail())) {
+
+            throw new DuplicateEmailException(
+                    patchRequestDTO.getEmail());
+        }
+
+
+        studentMapper.updateEntity(
+                patchRequestDTO,
+                existingStudent
+        );
+
+
+        Student updatedStudent =
+                studentRepository.save(existingStudent);
+
+
+        return studentMapper.toDTO(updatedStudent);
+    }
+
+    private Student findStudentById(Long id) {
+
+        return studentRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Student", id));
-
-        studentRepository.delete(student);
-
     }
 }

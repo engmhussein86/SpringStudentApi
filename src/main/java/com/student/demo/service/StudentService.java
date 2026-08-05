@@ -1,5 +1,6 @@
 package com.student.demo.service;
 
+import com.student.demo.dto.StudentPatchRequestDTO;
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
@@ -16,5 +17,10 @@ public interface StudentService {
      StudentResponseDTO  createStudent(StudentRequestDTO student);
      StudentResponseDTO updateStudent(Long id, StudentRequestDTO student);
      void deleteStudent(Long id);
+
+     StudentResponseDTO patchStudent(
+             Long id,
+             StudentPatchRequestDTO patchRequestDTO
+     );
 
 }

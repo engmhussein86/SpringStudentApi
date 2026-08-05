@@ -1,5 +1,6 @@
 package com.student.demo.mapper;
 
+import com.student.demo.dto.StudentPatchRequestDTO;
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.entity.Student;
@@ -40,5 +41,25 @@ public class StudentMapper {
         student.setLastName(dto.getLastName());
         student.setEmail(dto.getEmail());
         student.setAge(dto.getAge());
+    }
+
+    public void updateEntity(StudentPatchRequestDTO dto,
+                             Student student) {
+
+        if (dto.getFirstName() != null) {
+            student.setFirstName(dto.getFirstName());
+        }
+
+        if (dto.getLastName() != null) {
+            student.setLastName(dto.getLastName());
+        }
+
+        if (dto.getEmail() != null) {
+            student.setEmail(dto.getEmail());
+        }
+
+        if (dto.getAge() != null) {
+            student.setAge(dto.getAge());
+        }
     }
 }

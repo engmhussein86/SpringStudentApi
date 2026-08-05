@@ -1,6 +1,7 @@
 package com.student.demo.controller;
 
 
+import com.student.demo.dto.StudentPatchRequestDTO;
 import com.student.demo.dto.StudentRequestDTO;
 import com.student.demo.dto.StudentResponseDTO;
 import com.student.demo.service.StudentService;
@@ -121,6 +122,19 @@ public class StudentController {
         studentService.deleteStudent(id);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<StudentResponseDTO> patchStudent(
+            @PathVariable Long id,
+            @Valid @RequestBody StudentPatchRequestDTO patchRequestDTO) {
+
+
+        StudentResponseDTO updatedStudent =
+                studentService.patchStudent(id, patchRequestDTO);
+
+
+        return ResponseEntity.ok(updatedStudent);
     }
 
 
