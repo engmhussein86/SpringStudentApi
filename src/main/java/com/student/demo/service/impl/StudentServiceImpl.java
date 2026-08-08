@@ -102,7 +102,7 @@ public class StudentServiceImpl implements StudentService {
 
 
         if (patchRequestDTO.getEmail() != null
-                && !existingStudent.getEmail()
+                && !patchRequestDTO.getEmail().isBlank() && !existingStudent.getEmail()
                 .equals(patchRequestDTO.getEmail())
                 && studentRepository.existsByEmail(
                 patchRequestDTO.getEmail())) {
